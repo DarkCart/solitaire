@@ -11,6 +11,8 @@ void renderCard(struct Card card, int x, int y);
 void renderCardStack(struct Card stack[52], int originalSize, int beginX, int beginY, int spacing);
 void renderPlayingField();
 
+void handleMouseInput();
+
 SDL_Surface* screenSurface = NULL;
 SDL_Renderer* renderer = NULL;
 SDL_Rect temp;
@@ -23,6 +25,8 @@ struct Card stacks[7][52];
 struct Card pile[4][13];
 
 bool needsRender = true;
+
+int mouseX, mouseY;
 
 int main() {
 	initialize_deck(deck);
@@ -54,6 +58,10 @@ int main() {
 		while (SDL_PollEvent(&e) != 0) {
 			if (e.type == SDL_QUIT) {
 				close = true;
+			}
+			if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
+				SDL_GetMouseState(&mouseX, &mouseY);
+				handleMouseInput();
 			}
 		}
 		if (needsRender) {
@@ -225,3 +233,6 @@ void renderPlayingField() {
 	SDL_RenderPresent(renderer);
 }
 
+void handleMouseInput() {
+	
+}
