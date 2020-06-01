@@ -47,6 +47,7 @@ void initialize_stacks(struct Card shuffled_deck[], struct Card stacks[7][52]) {
 			//printf("setting %d stack card %d to %s of %s\n", (k+1), (l+1), shuffled_deck[(k*7)+l].value, shuffled_deck[(k*7)+l].suit);
 			stacks[k][l] = shuffled_deck[(k*7)+l];
 			stacks[k][l].exists = true;
+			stacks[k][l].visible = false;
 		}
 	}
 }
@@ -82,4 +83,30 @@ SDL_Color getColor(char suit[10]) {
 
 bool areCardsOpposite(struct Card card1, struct Card card2) {
 	return !(getColor(card1.suit).r == getColor(card2.suit).r);
+}
+
+void move_stack(struct Card original[], int begin_index, struct Card dest[], int original_size) {
+	//printf("O %d\n", get_true_end(original));
+	int length = get_true_end(original);
+	int new_index = original_size;
+	for (int i = begin_index; i < length; i++) {
+		//printf("%d\n", i);
+		dest[new_index] = original[i];
+		original[i] = *BLANK_CARD;
+		dest[new_index].exists = true;
+		new_index++;
+	}
+	//printf("E %d\n", original[7].value); 
+	//printf("D %d\n", get_true_end(dest));
+}
+
+int get_visible_cards(struct Card stack[]) {
+	int count = 0;
+	for (int i = 0; i < 52; i++) {
+		if (!(stack[i].visible)) {
+			break;
+		}
+		count++;
+	}
+	return count;
 }

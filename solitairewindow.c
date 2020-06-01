@@ -12,6 +12,7 @@ void renderCardStack(struct Card stack[52], int originalSize, int beginX, int be
 void renderPlayingField();
 
 void handleMouseInput();
+void handleKeyboardInput();
 
 SDL_Surface* screenSurface = NULL;
 SDL_Renderer* renderer = NULL;
@@ -50,9 +51,11 @@ int main() {
 	
 	move_card(stacks[6], 6, stacks[5], get_true_end(stacks[5]));
 	move_card(stacks[6], 5, stacks[5], get_true_end(stacks[5]));
-	printf("%d\n", get_true_end(stacks[6]));
-	printf("%d\n", areCardsOpposite(stacks[5][5], stacks[5][6]));
-	printf("%d\n", get_difference(stacks[5][5], stacks[5][6]));
+	move_card(stacks[6], 4, stacks[5], get_true_end(stacks[5]));
+	
+	//printf("%d\n", get_true_end(stacks[5]));
+	//printf("%d\n", areCardsOpposite(stacks[5][5], stacks[5][6]));
+	//printf("%d\n", get_difference(stacks[5][5], stacks[5][6]));
 
 	while (!close) {
 		while (SDL_PollEvent(&e) != 0) {
@@ -62,6 +65,9 @@ int main() {
 			if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
 				SDL_GetMouseState(&mouseX, &mouseY);
 				handleMouseInput();
+			}
+			if (e.type == SDL_KEYDOWN) {
+				handleKeyboardInput();
 			}
 		}
 		if (needsRender) {
@@ -82,24 +88,26 @@ int main() {
 }
 
 void render() {
+	SDL_SetRenderDrawColor(renderer, 50, 255, 90, 0);
+	SDL_RenderClear(renderer);
 	renderPlayingField();
 	int xIndex = 50;
 	for (int i = 0; i < 7; i++) {
 		renderCardStack(stacks[i], (i+1), xIndex, 100, 30);
 		xIndex += 100;
 	}
+	SDL_RenderPresent(renderer);
 	needsRender = false;
 }
 
 void renderCardStack(struct Card stack[52], int originalSize, int beginX, int beginY, int spacing) {
 	int yIndex = beginY;
+	printf("%d\n", originalSize);
 	for (int i = 0; i < get_true_end(stack); i++) {
-		if (i < (originalSize-1)) {
-			stack[i].visible = false;
-		}
-		
-		if (!stack[get_true_end(stack)-1].visible) {
-			stack[i].visible = true;
+		stack[originalSize-1].visible = true; // display the end card if the stack size hasn't been changed
+		stack[get_true_end(stack)-1].visible = true; // display the end card if the stack size has been changed
+		if (i > originalSize - 1 && i < get_true_end(stack)) {
+			stack[i].visible = true; // display all cards that are larger than the original size of the stack but smaller than the end of the stack
 		}
 		renderCard(stack[i], beginX, beginY+yIndex);
 		yIndex += spacing;
@@ -199,8 +207,6 @@ void renderCard(struct Card card, int x, int y) {
 	
 	SDL_RenderCopy(renderer, middleTexture, NULL, &middleRect);
 	
-	SDL_RenderPresent(renderer);
-	
 	SDL_DestroyTexture(topTexture);
 	SDL_DestroyTexture(middleTexture);
 	SDL_FreeSurface(topSurface);
@@ -228,11 +234,20 @@ void renderPlayingField() {
 			SDL_RenderDrawRect(renderer, &pileRect);
 	}
 	
-	SDL_RenderDrawRect(renderer, &deckRect);
-	
 	SDL_RenderPresent(renderer);
 }
 
 void handleMouseInput() {
 	
+}
+
+void handleKeyboardInput() {
+	const Uint8 *state = SDL_GetKeyboardState(NULL);
+	if (state[SDL_SCANCODE_RETURN]) {
+		
+		move_stack(stacks[5], 5, stacks[0], 1);
+		needsRender = true;
+		printf("<RETURN> is pressed.\n");
+	}
+
 }

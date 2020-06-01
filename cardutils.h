@@ -17,7 +17,11 @@ void initialize_stacks();
 
 void move_card(struct Card original[], int original_index, struct Card newdeck[], int newindex);
 
+void move_stack(struct Card original[], int begin_index, struct Card dest[], int original_size); 
+
 int get_true_end(struct Card stack[]);
+
+int get_visible_cards(struct Card stack[]);
 
 int get_difference(struct Card card1, struct Card card2);
 
