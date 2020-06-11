@@ -7,6 +7,9 @@ struct Card {
 	int value;
 	bool visible;
 	bool exists;
+	int renderX;
+	int renderY;
+	int renderHeight;
 };
 
 void shuffle_deck(struct Card deck[]);

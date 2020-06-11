@@ -12,7 +12,7 @@
 
 char suits[4][10] = {"Clubs", "Hearts", "Spades", "Diamonds"};
 
-const struct Card BLANK_CARD[] = {"", 0, false, false};
+const struct Card BLANK_CARD[] = {"", 0, false, false, -1, -1};
 
 SDL_Color BLACK = {32, 32, 32};
 SDL_Color RED = {255, 80, 80};
